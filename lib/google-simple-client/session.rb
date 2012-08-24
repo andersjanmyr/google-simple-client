@@ -30,6 +30,17 @@ module GoogleSimpleClient
       code = scrape_web_and_return_code(uri)
       @client.authorization.code = code
       @client.authorization.fetch_access_token!
+      @drive = @client.discovered_api('drive', 'v2')
+    end
+
+    def get(title, format)
+      files = find_files(title)
+      return "No files found for title #{title}" if files.empty?
+      if format
+        files.map { |f| download_file(f, format) }
+      else
+        files.map { |f| f.title }
+      end
     end
 
     private
@@ -80,6 +91,26 @@ module GoogleSimpleClient
       raise Error.new("Cannot obtain code from #{page.title}") unless code
       code
     end
-  end
 
+
+    def find_files(title)
+      result = @client.execute(
+        :api_method => @drive.files.list,
+        :parameters => { :q => "title contains '#{title}'" }
+      )
+      raise Error.new(result.data['error']['message']) if result.status != 200
+      files = result.data
+      files.items
+    end
+
+    def download_file(file, format)
+      url = file.export_links['application/pdf']
+      raise Error.new("Cannot download file #{file}") unless url
+
+      result = @client.execute(:uri => url.sub('pdf', format))
+      raise Error.new(result.data['error']['message']) unless result.status == 200
+
+      return result.body
+    end
+  end
 end
