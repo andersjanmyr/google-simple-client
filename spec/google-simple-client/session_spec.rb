@@ -21,6 +21,7 @@ module GoogleSimpleClient
         it 'raises error when a required option is missing' do
           expect {
             Session.new({
+              client_id: nil,
               client_secret: 'secret',
               email: 'email',
               password: 'password'
