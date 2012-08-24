@@ -1,3 +1,78 @@
 #!/usr/bin/env ruby
+#
+lib_dir = File.join(File.dirname(__FILE__), '..', 'lib')
+$LOAD_PATH.unshift lib_dir if File.directory?(lib_dir)
 
 require 'google-simple-client'
+require 'optparse'
+require 'ostruct'
+
+PROGRAM_NAME = $0
+
+def main
+  begin
+    init_option_parser
+    @option_parser.parse!
+    title = get_title
+    get_from_google title, @options 
+  rescue OptionParser::ParseError => error
+    puts error.message
+    puts @option_parser
+    exit
+  end
+end
+
+
+def init_option_parser
+  @option_parser = OptionParser.new do |opts|
+    opts.banner = "#{PROGRAM_NAME} [options] title"
+    opts.separator ""
+    opts.separator "Options are ..."
+
+    # Add the command on_tail, to make it appear as the last option in the list.
+    opts.on_tail("-h", "--help", "Display this help message.") do
+      puts opts
+      exit
+    end
+
+    program_options.each { |args| opts.on(*args) }
+  end
+end
+
+def program_options
+  @options = OpenStruct.new
+  [
+    # The values of the array are,
+  # [long_option, short_option and parameter, description, code to execute]
+  ['--format FORMAT', '-f', "Format of the file to get",
+   lambda { |value| @options.format = value }
+  ],
+  ['--verbose', '-v', "Log to standard output.",
+   lambda { |value| @options.verbose = true }
+  ],
+  ['--version', '-V', "Display the program version.",
+   lambda { |value|
+     puts "#{PROGRAM_NAME}, version #{GoogleSimpleClient::VERSION}"
+     exit
+   }
+  ]
+  ]
+end
+
+def get_title 
+  if ARGV.empty?
+    puts 'A title to search for is required'
+    puts @option_parser
+    exit
+  end
+  ARGV.join
+end
+  
+def get_from_google title, options
+  session = GoogleSimpleClient::Session.new
+  session.authenticate
+  puts session.get title, options.format
+end
+
+main
+
