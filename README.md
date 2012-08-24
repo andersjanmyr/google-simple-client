@@ -1,6 +1,8 @@
-# Google::Simple::Client
+# GoogleSimpleClient
 
-TODO: Write a gem description
+Simplifies the usage of google-api-client and provides a command line tool for
+finding and getting documents from Google Drive.
+
 
 ## Installation
 
@@ -18,7 +20,8 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+    $ google-simple-client [options] command 
+
 
 ## Contributing
 
