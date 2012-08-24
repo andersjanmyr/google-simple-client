@@ -69,8 +69,9 @@ module GoogleSimpleClient
       page = agent.submit(form)
 
       # Accept
-      acceptForm = page.forms[0]
-      page = agent.submit(acceptForm)
+      accept_form = page.forms[0]
+      raise Error.new("Cannot obtain code from #{page.title}") unless accept_form
+      page = agent.submit(accept_form)
 
       # Code is the string after the =
       code = page.title.split('=')[1]

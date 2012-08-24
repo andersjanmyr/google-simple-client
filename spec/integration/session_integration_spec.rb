@@ -12,5 +12,12 @@ describe 'session integration' do
       session = GoogleSimpleClient::Session.new
       session.authenticate
     end
+
+    it 'raises error with  invalid credentials' do
+      session = GoogleSimpleClient::Session.new({email: 'missing'})
+      expect {
+        session.authenticate
+      }.to raise_error GoogleSimpleClient::Error
+    end
   end
 end
