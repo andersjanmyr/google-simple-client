@@ -24,6 +24,16 @@ module GoogleSimpleClient
       raise Error.new("Missing option error #{@options.inspect}") unless @options.values.all?
     end
 
+    def authenticate
+      init_client
+      uri = @client.authorization.authorization_uri
+      code = scrape_web_and_return_code(uri)
+      @client.authorization.code = code
+      @client.authorization.fetch_access_token!
+    end
+
+    private
+
     def read_options_from_init_file
       file = find_init_file
       if file
@@ -37,14 +47,6 @@ module GoogleSimpleClient
     def find_init_file
       return '.google-simple-client' if File.exist?('.google-simple-client')
       return "#{ENV['HOME']}/.google-simple-client" if File.exist?("#{ENV['HOME']}/.google-simple-client")
-    end
-
-    def authenticate
-      init_client
-      uri = @client.authorization.authorization_uri
-      code = scrape_web_and_return_code(uri)
-      @client.authorization.code = code
-      @client.authorization.fetch_access_token!
     end
 
     def init_client
