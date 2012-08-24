@@ -1,4 +1,4 @@
-
+require 'google-simple-client/error'
 module GoogleSimpleClient
   class Session
     OAUTH_SCOPE = 'https://www.googleapis.com/auth/drive.readonly'
@@ -14,7 +14,7 @@ module GoogleSimpleClient
         password: nil
       }
       @options.merge!(options)
-      raise "Missing option error #{@options.inspect}" unless @options.values.all?
+      raise Error.new("Missing option error #{@options.inspect}") unless @options.values.all?
     end
   end
 
