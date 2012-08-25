@@ -18,7 +18,23 @@ Or install it yourself as:
 
     $ gem install google-simple-client
 
-## Usage
+## Register an App with Google Drive
+
+Enable [Google drive](https://developers.google.com/drive/register).
+Make sure that you enable both the `Drive API` and the `Drive SDK`.
+
+## Usage API
+
+    session = GoogleSimpleClient::Session.new({
+          client_id: 'cid',
+          client_secret: 'secret',
+          email: 'email',
+          password: 'password'
+        })
+    session.authenticate
+    pdf = session.get 'title', 'pdf'
+
+## Usage CLI
 
     $ google-simple-client [options] command 
 
