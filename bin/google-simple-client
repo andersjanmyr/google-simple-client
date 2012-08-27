@@ -27,7 +27,7 @@ def init_option_parser
   @option_parser = OptionParser.new do |opts|
     opts.banner = "#{PROGRAM_NAME} [options] title"
     opts.separator ""
-    opts.separator "Options are ..."
+    opts.separator "Options are:"
 
     # Add the command on_tail, to make it appear as the last option in the list.
     opts.on_tail("-h", "--help", "Display this help message.") do
@@ -69,7 +69,7 @@ def get_title
 end
   
 def get_from_google title, options
-  session = GoogleSimpleClient::Session.new
+  session = GoogleSimpleClient::Session.new(verbose: @options.verbose)
   session.authenticate
   puts session.get title, options.format
 end

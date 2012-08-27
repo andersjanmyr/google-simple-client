@@ -21,6 +21,7 @@ module GoogleSimpleClient
       init_file_options = read_options_from_init_file
       @options.merge!(init_file_options)
       @options.merge!(options)
+      @verbose = options.delete(:verbose)
       raise Error.new("Missing option error #{@options.inspect}") unless @options.values.all?
     end
 
@@ -73,44 +74,59 @@ module GoogleSimpleClient
       agent = Mechanize.new
 
       # Start loggin in
+      log "Logging into #{uri}"
       page = agent.get(uri)
+      log page.title
 
       # Login
       form = page.form_with(:id => 'gaia_loginform')
       form.Email = @options[:email]
       form.Passwd = @options[:password]
+      log "Submitting form"
       page = agent.submit(form)
+      log page.title
 
       # Accept
       accept_form = page.forms[0]
       raise Error.new("Cannot obtain code from #{page.title}") unless accept_form
+      log "Accepting form"
       page = agent.submit(accept_form)
+      log page.title
 
       # Code is the string after the =
       code = page.title.split('=')[1]
       raise Error.new("Cannot obtain code from #{page.title}") unless code
+      log "Retrieved code: #{code}"
       code
     end
 
 
     def find_files(title)
+      log "Searching for '#{title}'"
       result = @client.execute(
         :api_method => @drive.files.list,
         :parameters => { :q => "title contains '#{title}'" }
       )
       raise Error.new(result.data['error']['message']) if result.status != 200
       files = result.data
+      log "Found #{files.items.size} files"
       files.items
     end
 
     def download_file(file, format)
       url = file.export_links['application/pdf']
       raise Error.new("Cannot download file #{file}") unless url
-
-      result = @client.execute(:uri => url.sub('pdf', format))
+      fetch_url = url.sub('pdf', format)
+      log "Fetching file: #{fetch_url}"
+      result = @client.execute(:uri => fetch_url)
       raise Error.new(result.data['error']['message']) unless result.status == 200
 
+      log result.body
       return result.body
+    end
+
+    def log text
+      puts text if @verbose
     end
   end
 end

@@ -29,14 +29,38 @@ Make sure that you enable both the `Drive API` and the `Drive SDK`.
           client_id: 'cid',
           client_secret: 'secret',
           email: 'email',
-          password: 'password'
+          password: 'password',
+          verbose: true
         })
     session.authenticate
     pdf = session.get 'title', 'pdf'
 
 ## Usage CLI
 
-    $ google-simple-client [options] command 
+    $ google-simple-client [options] title
+
+    Options are ...
+        -f, --format FORMAT              Format of the file to get
+        -v, --verbose                    Log to standard output.
+        -V, --version                    Display the program version.
+        -h, --help                       Display this help message.P
+
+## Configuration
+
+It is also possible to set the options to `Session.new` in a configuration
+file called `~/.google-simple-client` or `$HOME/.google-simple-client`. The
+format of the file is YAML. Example:
+
+    #.google-simple-client
+
+    client_id: cid
+    client_secret: secret
+    email: email
+    password: password
+
+Command line parameters and code parameters override the configuration file
+options as expected.
+
 
 
 ## Contributing
