@@ -16,7 +16,8 @@ Gem::Specification.new do |gem|
   gem.name          = 'google-simple-client'
   gem.require_paths = ['lib']
   gem.version       = GoogleSimpleClient::VERSION
-  gem.add_development_dependency 'rspec'
   gem.add_dependency 'mechanize'
   gem.add_dependency 'google-api-client'
+
+  gem.add_development_dependency 'rspec'
 end
