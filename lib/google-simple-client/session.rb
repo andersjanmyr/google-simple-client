@@ -21,7 +21,7 @@ module GoogleSimpleClient
       init_file_options = read_options_from_init_file
       @options.merge!(init_file_options)
       @options.merge!(options)
-      @verbose = options.delete(:verbose)
+      @verbose = @options.delete(:verbose)
       raise Error.new("Missing option error #{@options.inspect}") unless @options.values.all?
     end
 

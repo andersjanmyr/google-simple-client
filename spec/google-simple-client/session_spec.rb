@@ -30,6 +30,18 @@ module GoogleSimpleClient
         end
       end
 
+      describe 'with option :vebose = nil' do
+        it 'is properly initialized' do
+          session = Session.new({
+            client_id: 'cid',
+            client_secret: 'secret',
+            email: 'email',
+            password: 'password',
+            verbose: nil
+          })
+          session.should be
+        end
+      end
       describe 'with options in init file' do
         before do
           File.open('.google-simple-client', 'w') do |f|
