@@ -35,6 +35,9 @@ Make sure that you enable both the `Drive API` and the `Drive SDK`.
     session.authenticate
     pdf = session.get 'title', 'pdf'
 
+
+Supported formats are (at least): 'pdf', 'html', 'csv', 'txt' etc.
+
 ## Usage CLI
 
     $ google-simple-client [options] title

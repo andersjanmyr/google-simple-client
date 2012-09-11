@@ -9,6 +9,15 @@ module GoogleSimpleClient
     OAUTH_SCOPE = 'https://www.googleapis.com/auth/drive.readonly'
     REDIRECT_URI = 'urn:ietf:wg:oauth:2.0:oob'
 
+    # Create the object and parse options
+    # @param [options]
+    #       Required options are:
+    #           :client_id, :client_secret, :email, and :password
+    #       Optional options are:
+    #           :redirect_uri, :scope, and :verbose
+    #
+    # Options may be provided as paramters or via an init file
+    #   ./.google-simple-client or ~/.google-simple-client
     def initialize options = {}
       @options = {
         redirect_uri: REDIRECT_URI,
@@ -25,6 +34,7 @@ module GoogleSimpleClient
       raise Error.new("Missing option error #{@options.inspect}") unless @options.values.all?
     end
 
+    # Authenticates with Google Drive
     def authenticate
       init_client
       uri = @client.authorization.authorization_uri
@@ -34,6 +44,9 @@ module GoogleSimpleClient
       @drive = @client.discovered_api('drive', 'v2')
     end
 
+    # Gets the files matching the title in the requested format
+    # @param [title] The name of the requested document
+    # @param [format] The format, available formats are: 'pdf', 'html', 'csv', etc.
     def get(title, format)
       files = find_files(title)
       return "No files found for title #{title}" if files.empty?
