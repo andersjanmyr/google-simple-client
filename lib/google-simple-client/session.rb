@@ -1,8 +1,10 @@
 require 'yaml'
 require 'google/api_client'
 require 'mechanize'
+require 'openssl'
 
 require 'google-simple-client/error'
+
 
 module GoogleSimpleClient
   class Session
@@ -87,24 +89,27 @@ module GoogleSimpleClient
       agent = Mechanize.new
 
       # Start loggin in
-      log "Logging into #{uri}"
+      log "Logging in"
+      log uri
       page = agent.get(uri)
-      log page.title
+      log page
 
       # Login
       form = page.form_with(:id => 'gaia_loginform')
       form.Email = @options[:email]
       form.Passwd = @options[:password]
-      log "Submitting form"
+      log "Login Form"
+      log form
       page = agent.submit(form)
-      log page.title
+      log page
 
       # Accept
       accept_form = page.forms[0]
       raise Error.new("Cannot obtain code from #{page.title}") unless accept_form
-      log "Accepting form"
+      log "Accept Form"
+      log accept_form
       page = agent.submit(accept_form)
-      log page.title
+      log page
 
       # Code is the string after the =
       code = page.title.split('=')[1]
@@ -139,7 +144,7 @@ module GoogleSimpleClient
     end
 
     def log text
-      puts text if @verbose
+      pp text if @verbose
     end
   end
 end
