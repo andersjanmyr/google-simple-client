@@ -22,6 +22,7 @@ Or install it yourself as:
 
 Enable [Google drive](https://developers.google.com/drive/register).
 Make sure that you enable both the `Drive API` and the `Drive SDK`.
+_Make sure you use Client ID for installed applications_.
 
 ## Usage API
 
